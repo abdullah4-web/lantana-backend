@@ -35,9 +35,9 @@ db.once("open", () => {
 
 // API Routes
 // Basic route
-app.get('/', (req, res) => {
-  res.send('API is Working. Continue Your Spirits of the application.');
-});
+// app.get('/', (req, res) => {
+//   res.send('API is Working. Continue Your Spirits of the application.');
+// });
 // Use the custom middleware for routes that should be accessible only from your frontend
 app.use('/api/properties', propertyRoutes);
 app.use('/api', LocationRouter);
@@ -51,6 +51,14 @@ app.use('/api/vehicles', vehicleRoutes);
 app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message });
 });
+if (process.env.NODE_ENV === 'production') {
+  const __dirname = path.resolve();
+  app.use(express.static(path.join(__dirname, './build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './build/index.html'));
+  });
+}
+
 
 
 
